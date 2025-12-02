@@ -12,7 +12,7 @@ import FFTGraph from "../../components/fftGraph";
 export default function EnergyPage() {
   // <--- hooks must be INSIDE the component
   const [selectedPoint, setSelectedPoint] = useState<{ assetId:string; assetPartId:string; axis:string; dateTime:number; type:string } | null>(null);
-  const [jwtToken, setJwtToken] = useState<string>(""); // set via auth or paste manually
+  const [jwtToken, setJwtToken] = useState<string>(""); // set via auth or paste manually add
 
   const containerVariants = {
     hidden: { opacity: 0 },
