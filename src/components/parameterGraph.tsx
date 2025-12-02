@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { Select, InputNumber } from "antd";
-
+import { apiUrl } from "@/lib/apiBase";
 import type Plotly from 'plotly.js-dist-min';
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 // const plotListenerRef = useRef<((...args: any[]) => void) | null>(null);
@@ -87,15 +87,14 @@ export default function ParameterGraph({ onPointSelected, onTokenChange }: {
         days: days,
         type: parameter
       };
-      const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000").replace(/\/$/, "");
-      const resp = await fetch(`${API_BASE}/api/assetpart/ParameterTrends`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token.replace(/^Bearer\s+/i, "")}`
-        },
-        body: JSON.stringify(body)
-      });
+const resp = await fetch(apiUrl("/api/assetpart/ParameterTrends"), {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token.replace(/^Bearer\s+/i, "")}`
+  },
+  body: JSON.stringify(body)
+});
       if (!resp.ok) {
         const text = await resp.text();
         throw new Error(`Status ${resp.status}: ${text}`);

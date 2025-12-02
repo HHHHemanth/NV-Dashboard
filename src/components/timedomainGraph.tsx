@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Select, InputNumber } from "antd";
-
+import { apiUrl } from "@/lib/apiBase";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 export default function TimeDomainGraph({
@@ -20,13 +20,13 @@ export default function TimeDomainGraph({
   async function fetchTimeSeries(payload: { assetId: string; assetPartId: string; axis: string; dateTime: number; type: string }) {
     setLoading(true);
     try {
-      const resp = await fetch("/api/assetpart/timeseries", {
+      const resp = await fetch(apiUrl("/api/assetpart/timeseries"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token.replace(/^Bearer\s+/i, "")}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(trigger)
       });
       if (!resp.ok) {
         const text = await resp.text();
@@ -53,8 +53,8 @@ export default function TimeDomainGraph({
         return;
       }
 
-      const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000").replace(/\/$/, "");
-      const url = `${API_BASE}/api/assetpart/timeseries`;
+
+      const url = apiUrl("/api/assetpart/timeseries");
       console.log("[TimeDomainGraph] fetching", url, "payload:", trigger, "tokenPresent:", !!token);
 
       setLoading(true);

@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-
+import { apiUrl } from "@/lib/apiBase";
 export default function FFTGraph({
   trigger,
   token
@@ -50,19 +50,20 @@ export default function FFTGraph({
         return;
       }
 
-      const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000").replace(/\/$/, "");
-      const url = `${API_BASE}/api/assetpart/fft`;
-
+ 
+      const url = apiUrl("/api/assetpart/fft");
+      console.log("[FFTGraph] fetching", url, "payload:", trigger, "tokenPresent:", !!token);
       setLoading(true);
       try {
-        const resp = await fetch(url, {
+        const resp = await fetch(apiUrl("/api/assetpart/fft"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token.replace(/^Bearer\s+/i, "")}`,
+            Authorization: `Bearer ${token.replace(/^Bearer\s+/i, "")}`
           },
-          body: JSON.stringify(trigger),
+          body: JSON.stringify(trigger)
         });
+
 
         const text = await resp.text();
         if (!resp.ok) {
